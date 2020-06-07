@@ -6,6 +6,7 @@ import it.polimi.tiw.utils.ConnectionHandler;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.UnavailableException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,11 @@ public class Register extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        connection = ConnectionHandler.getConnection(getServletContext());
+        try {
+            connection = ConnectionHandler.getConnection(getServletContext());
+        } catch (UnavailableException e){
+            e.printStackTrace();
+        }
 
     }
 
