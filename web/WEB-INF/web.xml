@@ -6,21 +6,28 @@
 
     <context-param>
         <param-name>dbUrl</param-name>
-        <param-value>jdbc:mysql://127.0.0.1:3306/db_esame_tiw?serverTimezone=Europe/Berlin</param-value>
+        <param-value>jdbc:mysql://192.168.1.121:3306/db_esame_tiw?serverTimezone=Europe/Berlin</param-value>
     </context-param>
     <context-param>
         <param-name>dbUser</param-name>
-        <param-value>user_db_tecweb</param-value>
+        <param-value>matmacsystem</param-value>
     </context-param>
     <context-param>
         <param-name>dbPassword</param-name>
-        <param-value></param-value>
+        <param-value>Jeremy1998</param-value>
     </context-param>
     <context-param>
         <param-name>dbDriver</param-name>
         <param-value>com.mysql.cj.jdbc.Driver</param-value>
     </context-param>
 
-
+    <filter>
+        <filter-name>Checker</filter-name>
+        <filter-class>it.polimi.tiw.filters.Checker</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>Checker</filter-name>
+        <url-pattern>/home/*</url-pattern>
+    </filter-mapping>
 
 </web-app>
