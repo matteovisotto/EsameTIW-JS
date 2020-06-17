@@ -104,6 +104,23 @@ public class UserDAO {
         }
     }
 
+    public ArrayList<User> getAllUsersExcept(int userId) throws SQLException {
+        String query = "SELECT  * FROM user WHERE id != ?";
+        ArrayList<User> list = new ArrayList<>();
+        try (PreparedStatement pstatement = con.prepareStatement(query);) {
+            pstatement.setInt(1, userId);
+            try (ResultSet result = pstatement.executeQuery();) {
+                while (result.next()){
+                    User user = new User();
+                    user.setId(result.getInt("id"));
+                    user.setUsername(StringEscapeUtils.unescapeJava(result.getString("username")));
+                    list.add(user);
+                }
+                return list;
+            }
+        }
+    }
+
     public void addUser(String username, String password) throws SQLException {
         String query = "INSERT INTO user (username, password, salt) VALUES (?, ?, ?)";
         String salt = Crypto.createSalt();
