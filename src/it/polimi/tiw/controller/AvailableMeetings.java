@@ -17,8 +17,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-@WebServlet("/home")
-public class Home extends HttpServlet {
+/**
+ * This Servlet is used to GET the available meetings, i.e. the meetings the current user has been invited to.
+ */
+@WebServlet("/home/availableMeetings")
+public class AvailableMeetings extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
 
@@ -38,7 +41,7 @@ public class Home extends HttpServlet {
         MeetingsDAO meetingsDAO = new MeetingsDAO(connection);
         ArrayList<Meeting> meetings;
         try {
-            meetings = meetingsDAO.getCreatedMeetings(user.getId());
+            meetings = meetingsDAO.getInvitedMeetings(user.getId());
         } catch (SQLException throwables) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println("Internal server error, please try later");
@@ -53,7 +56,8 @@ public class Home extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        resp.getWriter().println("Invalid request for method POST in /home/availableMeetings");
     }
 
     @Override
