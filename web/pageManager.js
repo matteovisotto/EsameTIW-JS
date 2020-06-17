@@ -140,17 +140,114 @@
         }
     }
 
+    function Wizard(_wizardId, _modalWindow, _alertContainer){
+        this.modal = _modalWindow;
+        this.alertContainer = _alertContainer;
+        this.wizard = _wizardId;
+
+        this.numOfTries = 0;
+        this.meeting =  null;
+
+        this.wizard.querySelector("input[id='resetMeetingButton']").addEventListener("click", (e) => {
+            e.target.closest("form").reset();
+            this.reset();
+        });
+
+        this.wizard.querySelector("input[id='addMeetingButton']").addEventListener("click", (e) => {
+            const form = e.target.closest("form");
+            if(form.checkValidity()){
+                this.meeting = {
+                    title: form['meetingName'],
+                    date: form['meetingDate'],
+                    time: form['meetingTime'],
+                    duration: form['meetingDuration'],
+                    maxPartecipants: form['meetingMaxParticipants']
+                }
+
+                this.modal.show();
+            } else {
+                form.reportValidity();
+            }
+
+        });
+
+        this.increaseTry = function () {
+            this.numOfTries = this.numOfTries +1;
+            if(this.numOfTries >= 3){
+                this.reset()
+                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + this.meeting.maxPartecipants + " people, the meeting will not be created.");
+            }
+        }
+
+        this.reset = function() {
+            this.numOfTries = 0;
+            this.modal.hide();
+        }
+
+    }
+
+    function ModalWindow(_modalWindows) {
+        this.modal = _modalWindows;
+        this.closeButton = this.modal.getElementsByClassName("close")[0]; //Get the specific modal close button
+
+        this.closeButton.addEventListener("click", () => {
+           this.hide();
+        });
+
+        window.addEventListener("click", (e) => {
+            if(e.target == this.modal){
+                this.hide();
+            }
+        });
+
+        this.show = function () {
+            this.modal.style.display = "block";
+        }
+
+        this.hide = function() {
+            this.reset();
+            this.modal.style.display = "none";
+        }
+
+        this.reset = function () {
+            this.modal.getElementsByClassName("modalTitle")[0].textContent = "Master data";
+            this.modal.getElementsByClassName("errorContainer")[0].hidden = true;
+            var modalBody = this.modal.getElementsByClassName("modalBodyContainer")[0];
+            modalBody.hidden = true;
+
+        }
+
+        this.setAsError = function(title, message) {
+            this.modal.getElementsByClassName("modalTitle")[0].textContent = title;
+            var modalBody = this.modal.getElementsByClassName("errorContainer")[0];
+            modalBody.hidden = false;
+            this.modal.getElementsByClassName("modalBodyContainer").hidden = true;
+            modalBody.innerHTML = "";
+            var paragraphElement = document.createElement("p");
+            paragraphElement.textContent = message;
+            modalBody.appendChild(paragraphElement);
+        }
+
+
+    }
+
     function PageOrchestrator() {
         const myMeetingsAlertContainer = document.getElementById("myMeetingsAlertContainer");
         const availableMeetingsAlertContainer = document.getElementById("availableMeetingsAlertContainer");
+        const wizardAlertContainer = document.getElementById("wizardAlertContainer");
         this.start = function () {
             myMeetingsAlertContainer.hidden = true;
             availableMeetingsAlertContainer.hidden = true;
-            let welcomeMessage = new WelcomeMessage(sessionStorage.getItem("username"), document.getElementById("usernameText"));
+            const welcomeMessage = new WelcomeMessage(sessionStorage.getItem("username"), document.getElementById("usernameText"));
             welcomeMessage.show();
 
             availableMeetings = new AvailableMeetings(availableMeetingsAlertContainer, document.getElementById("availableMeetingsTable"), document.getElementById("availableMeetingsTableBody"));
             myMeetings = new MyMeetings(myMeetingsAlertContainer, document.getElementById("myMeetingsTable"), document.getElementById("myMeetingsTableBody"));
+
+            let newMeetingModal = new ModalWindow(document.getElementById("createMeetingModal"));
+
+            wizard = new Wizard(document.getElementById("newMeetingWizard"), newMeetingModal, wizardAlertContainer);
+
 
             document.querySelector("a[href='logout']").addEventListener('click', () => {
                window.sessionStorage.removeItem("username");
@@ -164,6 +261,7 @@
             myMeetings.reset();
             availableMeetings.show();
             myMeetings.show();
+            wizard.reset();
         }
     }
 })();

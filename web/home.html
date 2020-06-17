@@ -54,20 +54,27 @@
             </div>
             <div class="col-4">
                 <h2>Create new meeting</h2>
-
-                <form class="form">
+                <div id="wizardAlertContainer"></div>
+                <form class="form" id="newMeetingWizard">
                     <label>Title</label>
-                    <input type="text" class="form-control" name="meetingName"/>
+                    <input type="text" class="form-control" name="meetingName" required/>
                     <!-- NOTA : Firefox non supporta datetime-local, perciò splittiamo -->
                     <label>Date</label>
-                    <input type="date" class="form-control" name="meetingDate">
+                    <input type="date" class="form-control" name="meetingDate" required>
                     <label>Time</label>
-                    <input type="time" class="form-control" name="meetingTime">
+                    <input type="time" class="form-control" name="meetingTime" required>
                     <label>Duration (in minutes)</label>
-                    <input type="number" class="form-control" name="meetingDuration"/>
+                    <input type="number" class="form-control" name="meetingDuration" required/>
                     <label>Max participants</label>
-                    <input type="number" class="form-control" name="meetingMaxParticipants"/>
-                    <input type="button" class="btn btn-success" value="Create" id="addMeetingButton"/>
+                    <input type="number" class="form-control" name="meetingMaxParticipants" required/>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="button" class="btn btn-warning" value="Cancel" name="cancel" id="resetMeetingButton"/>
+                        </div>
+                        <div class="col-6">
+                            <input type="button" class="btn btn-success" value="Create" name="submit" id="addMeetingButton"/>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -75,6 +82,20 @@
 </div>
 
 <!-- Start modal content from here -->
+<div id="createMeetingModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" id="closeModal">&times;</span>
+            <h2 class="modalTitle">New Meeting</h2>
+        </div>
+        <div class="modal-body">
+            <div class="errorContainer"></div>
+            <div class="modalBodyContainer"></div>
+        </div>
+    </div>
+</div>
+<!-- End modal content here -->
 <script src="pageManager.js"></script>
 </body>
 </html>
