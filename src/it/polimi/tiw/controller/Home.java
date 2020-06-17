@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * This servlet return the information about the current user, such as id, username and number of tries in current creation process
+ */
 @WebServlet("/home")
 public class Home extends HttpServlet {
     private static final long serialVersionUID = 1L;

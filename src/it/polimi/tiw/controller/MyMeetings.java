@@ -17,6 +17,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+/**
+ * This servlet return the meetings created by the user logged in
+ */
 @WebServlet("/home/myMeetings")
 public class MyMeetings extends HttpServlet {
     private static final long serialVersionUID = 1L;

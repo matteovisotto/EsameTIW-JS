@@ -18,6 +18,9 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.NoSuchElementException;
 
+/**
+ * This servlet perform the login action
+ */
 @WebServlet("/login")
 @MultipartConfig
 public class Login extends HttpServlet {
