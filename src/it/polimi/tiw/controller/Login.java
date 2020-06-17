@@ -3,6 +3,7 @@ package it.polimi.tiw.controller;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
+import it.polimi.tiw.utils.Utility;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.servlet.ServletException;
@@ -47,6 +48,12 @@ public class Login extends HttpServlet {
 
         username = StringEscapeUtils.escapeJava(req.getParameter("username"));
         password = StringEscapeUtils.escapeJava(req.getParameter("password"));
+
+        if(!Utility.isValidMailAddress(username)){
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("The username must be a valid email address");
+            return;
+        }
 
         if (username == null || password == null || username.isEmpty() || password.isEmpty() ) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
