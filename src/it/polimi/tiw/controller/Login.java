@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +15,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.NoSuchElementException;
 
 @WebServlet("/login")
+@MultipartConfig
 public class Login extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
@@ -52,13 +55,15 @@ public class Login extends HttpServlet {
         }
 
         UserDAO userDao = new UserDAO(connection);
-        User user = null;
+        User user;
         try {
             user = userDao.checkCredentials(username, password);
         } catch (SQLException e) {
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             resp.getWriter().println("Internal server error, retry later");
             return;
+        } catch (NoSuchElementException e){
+            user = null;
         }
 
         if (user == null) {
