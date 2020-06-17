@@ -37,6 +37,11 @@ public class Login extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getSession().getAttribute("user")==null){
+            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            resp.getWriter().println("You are not logged in");
+            return;
+        }
         resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         resp.getWriter().println("Invalid action for method GET and path login");
     }
