@@ -39,7 +39,7 @@
                     if(req.status == 200){
                         var availableMeetings = JSON.parse(req.responseText);
                         if(availableMeetings.length == 0){
-                            self.alertContainer.className = "alert alert.primary";
+                            self.alertContainer.className = "alert alert-primary";
                             self.alertContainer.textContent = "No available meetings";
                             self.alertContainer.hidden = false;
                             return;
@@ -92,13 +92,13 @@
 
         this.show = function () {
             const self = this;
-            makeCall("GET", "home", null, function (req) {
+            makeCall("GET", "home/myMeetings", null, function (req) {
                 if(req.readyState === 4){
                     var message = req.responseText;
                     if(req.status == 200){
                         var availableMeetings = JSON.parse(req.responseText);
                         if(availableMeetings.length == 0){
-                            self.alertContainer.className = "alert alert.primary";
+                            self.alertContainer.className = "alert alert-primary";
                             self.alertContainer.textContent = "No available meetings";
                             self.alertContainer.hidden = false;
                             return;
@@ -141,14 +141,16 @@
     }
 
     function PageOrchestrator() {
-        var alertContainer = document.getElementById("alertContainer");
+        const myMeetingsAlertContainer = document.getElementById("myMeetingsAlertContainer");
+        const availableMeetingsAlertContainer = document.getElementById("availableMeetingsAlertContainer");
         this.start = function () {
-            alertContainer.hidden = true;
+            myMeetingsAlertContainer.hidden = true;
+            availableMeetingsAlertContainer.hidden = true;
             let welcomeMessage = new WelcomeMessage(sessionStorage.getItem("username"), document.getElementById("usernameText"));
             welcomeMessage.show();
 
-            availableMeetings = new AvailableMeetings(alertContainer, document.getElementById("availableMeetingsTable"), document.getElementById("availableMeetingsTableBody"));
-            myMeetings = new MyMeetings(alertContainer, document.getElementById("myMeetingsTable"), document.getElementById("myMeetingsTableBody"));
+            availableMeetings = new AvailableMeetings(availableMeetingsAlertContainer, document.getElementById("availableMeetingsTable"), document.getElementById("availableMeetingsTableBody"));
+            myMeetings = new MyMeetings(myMeetingsAlertContainer, document.getElementById("myMeetingsTable"), document.getElementById("myMeetingsTableBody"));
 
             document.querySelector("a[href='logout']").addEventListener('click', () => {
                window.sessionStorage.removeItem("username");
@@ -156,7 +158,8 @@
         }
 
         this.refresh = function () {
-            alertContainer.hidden = true
+            myMeetingsAlertContainer.hidden = true
+            availableMeetingsAlertContainer.hidden = true;
             availableMeetings.reset();
             myMeetings.reset();
             availableMeetings.show();
