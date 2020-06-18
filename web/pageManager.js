@@ -157,11 +157,11 @@
             const form = e.target.closest("form");
             if(form.checkValidity()){
                 this.meeting = {
-                    title: form['meetingName'],
-                    date: form['meetingDate'],
-                    time: form['meetingTime'],
-                    duration: form['meetingDuration'],
-                    maxPartecipants: form['meetingMaxParticipants']
+                    title: form['meetingName'].value,
+                    date: form['meetingDate'].value,
+                    time: form['meetingTime'].value,
+                    duration: form['meetingDuration'].value,
+                    maxPartecipants: form['meetingMaxParticipants'].value
                 }
                 var self = this;
                 makeCall("POST", "home/addMeeting", form, function (req) {
@@ -191,10 +191,11 @@
         });
 
         this.increaseTry = function () {
+            var self = this;
             this.numOfTries = this.numOfTries +1;
             if(this.numOfTries >= 3){
                 this.reset()
-                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + this.meeting.maxPartecipants-1 + " people, the meeting will not be created.");
+                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + (parseInt(self.meeting.maxPartecipants)-1) + " people, the meeting will not be created.");
                 return true;
             }
             return false;
@@ -216,6 +217,7 @@
         this.modalBodyMessage = modalObjects['modalBodyMessage'];
         this.modalBody = modalObjects['modalBody'];
         this.form = modalObjects['modalInternalForm'];
+        this.modalFormContent = modalObjects['modalFormContent'];
         this.closeButton = this.modal.getElementsByClassName("close")[0]; //Get the specific modal close button
 
         this.closeButton.addEventListener("click", () => {
@@ -240,6 +242,7 @@
                             self.setAsError("No people found", "No users are available for a meeting invitation");
                             return;
                         }
+                        self.modalBody.hidden = false;
                         self.update(availablePeople);
                     } else {
                         self.setAsError("Error", message);
@@ -251,7 +254,8 @@
 
         this.update = function(data){
             var inputGroup, input, label;
-            this.form.innerHTML = "<input type='hidden' name='step' value='secondStep'/>";
+            this.modalFormContent.innerHTML = "";
+            var self = this;
             data.forEach(function (person) {
                 inputGroup = document.createElement("div");
                 inputGroup.className = "inputGroup";
@@ -269,7 +273,7 @@
 
                 inputGroup.appendChild(input);
                 inputGroup.appendChild(label);
-                this.form.appendChild(inputGroup);
+                self.modalFormContent.appendChild(inputGroup);
             });
         }
 
@@ -287,12 +291,14 @@
 
         this.setAsError = function(title, message) {
             this.modalTitle.textContent = title;
-            this.modalBody.hidden = false;
+            this.modalErrorContainer.hidden = false;
             this.modalBody.hidden = true;
-            this.modalBody.innerHTML = "";
+            this.modalBodyMessage.textContent = "";
+            this.modalErrorContainer.innerHTML = "";
+            this.modalFormContent.innerHTML = "";
             var paragraphElement = document.createElement("p");
             paragraphElement.textContent = message;
-            this.modalBody.appendChild(paragraphElement);
+            this.modalErrorContainer.appendChild(paragraphElement);
             this.modal.style.display="block";
         }
 
@@ -302,11 +308,11 @@
         });
 
         this.submitButton.addEventListener("click", (e) => {
-            var checkboxes = e.target.closest("form").querySelector("input[type='checkbox']");
+            var checkboxes = e.target.closest("form").querySelectorAll("input[type='checkbox']");
             var counter = 0;
             checkboxes.forEach(function (cb) {
                 if(cb.checked){
-                    counter++;
+                    counter = counter+1;
                 }
             });
             if(counter <= wizard.meeting.maxPartecipants-1){
@@ -330,10 +336,10 @@
                                 break;
                         }
                     }
-                }, true)
+                }, true);
             } else {
                 if(!wizard.increaseTry()){
-                    this.modalBodyMessage.textContent = "Too much people selected, please delete at least " + counter-wizard.meeting.maxPartecipants-1 + "people";
+                    this.modalBodyMessage.textContent = "Too much people selected, please delete at least " + (parseInt(counter)-parseInt(wizard.meeting.maxPartecipants)+1) + " people";
                 }
             }
         });
@@ -360,7 +366,8 @@
                 modalTitle: document.getElementById("modalTitle"),
                 modalBody: document.getElementById("modalBodyContainer"),
                 modalBodyMessage: document.getElementById("modalBodyMessage"),
-                modalErrorContainer: document.getElementById("modalErrorContainer")
+                modalErrorContainer: document.getElementById("modalErrorContainer"),
+                modalFormContent: document.getElementById("modalFormContent")
             });
 
             wizard = new Wizard(document.getElementById("newMeetingWizard"), newMeetingModal, wizardAlertContainer);

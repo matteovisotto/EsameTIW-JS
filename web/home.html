@@ -96,13 +96,12 @@
                 <div id="modalBodyMessage"></div>
                 <form class="checkbox-form" id="modalInternalForm">
                     <input type="hidden" name="step" value="secondStep" />
-                    <!--<div class="inputGroup">
-                        <input data-th-with="id=${c.getId()}" data-th-id="${id}" type="checkbox" name="invitations" data-th-value="${id}" data-th-checked="${selected.contains(id)} ? 'checked'"/>
-                        <label data-th-for="${c.getId()}" data-th-text="${c.getUsername()}"></label>
-                    </div>-->
+                    <div id="modalFormContent">
+
+                    </div>
                     <div class="row" style="text-align: center;">
-                        <button type="button" class="btn btn-primary centered" id="modalSubmitButton">Submit</button>
-                        <button type="button" class="btn btn-warning centered" id="modalCancelButton">Cancel</button>
+                        <input type="button" class="btn btn-primary centered" id="modalSubmitButton" value="Submit"/>
+                        <input type="button" class="btn btn-warning centered" id="modalCancelButton" value="Cancel" />
                     </div>
                 </form>
             </div>

@@ -463,6 +463,13 @@ p, h1, h2, h3, h4, h5, h6{
     color: #FFFFFF;
 }
 
+.centered {
+    margin: 7px auto 0 auto;
+    width: 20%;
+    display: inline-block;
+    text-align: center;
+}
+
 .btn-primary:hover{
     background:#ffffff;
     color: var(--color-primary);
@@ -608,7 +615,6 @@ p, h1, h2, h3, h4, h5, h6{
     padding-bottom: 10px;
     padding-left: 15px;
     padding-right: 15px;
-    margin-bottom: 5px;
     margin-top: 5px;
     border: 1px solid;
     border-radius: 5px;
@@ -1007,6 +1013,74 @@ div.desc {
     margin-left: 0.3125rem;
 }
 
+.inputGroup {
+    background-color: #fff;
+    border: 2px solid gray;
+    border-radius: 20px;
+    display: block;
+    margin-bottom: 3px;
+    position: relative;
+}
+.inputGroup label {
+    padding: 12px 0 12px 0;
+    width: 100%;
+    display: block;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+.inputGroup label:before {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #5562eb;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    z-index: -1;
+}
+.inputGroup label:after {
+    width: 32px;
+    height: 32px;
+    content: '';
+    background-repeat: no-repeat;
+    background-position: 2px 3px;
+    border-radius: 50%;
+    z-index: 2;
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: all 200ms ease-in;
+}
+.inputGroup input:checked ~ label:before {
+    opacity: 1;
+}
+.inputGroup input:checked ~ label:after {
+    background-color: #54e0c7;
+    border-color: #54e0c7;
+}
+.inputGroup input {
+    width: 32px;
+    height: 32px;
+    order: 1;
+    z-index: 2;
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    visibility: hidden;
+}
+
+.checkbox-form {
+    padding: 0 16px;
+    max-width: 550px;
+    margin: 50px auto;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 36px;
+}
 
 @media (max-width: 700px) {
     [class*="col-"] {
