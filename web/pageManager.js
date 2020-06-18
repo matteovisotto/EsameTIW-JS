@@ -195,7 +195,7 @@
             this.numOfTries = this.numOfTries +1;
             if(this.numOfTries >= 3){
                 this.reset()
-                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + (parseInt(self.meeting.maxPartecipants)-1) + " people, the meeting will not be created.");
+                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + parseInt(self.meeting.maxPartecipants) + " people, the meeting will not be created.");
                 return true;
             }
             return false;
