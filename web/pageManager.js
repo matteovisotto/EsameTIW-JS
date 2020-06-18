@@ -163,8 +163,27 @@
                     duration: form['meetingDuration'],
                     maxPartecipants: form['meetingMaxParticipants']
                 }
+                var self = this;
+                makeCall("POST", "home/addMeeting", form, function (req) {
+                    if (req.readyState == XMLHttpRequest.DONE) {
+                        var message = req.responseText;
+                        switch (req.status) {
+                            case 200:
+                                self.modal.show();
+                                break;
+                            case 400: // bad request
+                                self.setAsError("Bad Request", message);
+                                break;
+                            case 401: // unauthorized
+                                self.setAsError("Unauthorized", message);
+                                break;
+                            case 500: // server error
+                                self.setAsError("Internal server error", message);
+                                break;
+                        }
+                    }
+                }, true);
 
-                this.modal.show();
             } else {
                 form.reportValidity();
             }
@@ -175,8 +194,10 @@
             this.numOfTries = this.numOfTries +1;
             if(this.numOfTries >= 3){
                 this.reset()
-                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + this.meeting.maxPartecipants + " people, the meeting will not be created.");
+                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + this.meeting.maxPartecipants-1 + " people, the meeting will not be created.");
+                return true;
             }
+            return false;
         }
 
         this.reset = function() {
@@ -186,8 +207,15 @@
 
     }
 
-    function ModalWindow(_modalWindows) {
+    function ModalWindow(_modalWindows, modalObjects) {
         this.modal = _modalWindows;
+        this.cancelButton = modalObjects['modalCancelButton'];
+        this.submitButton = modalObjects['modalSubmitButton'];
+        this.modalTitle = modalObjects['modalTitle'];
+        this.modalErrorContainer = modalObjects['modalErrorContainer'];
+        this.modalBodyMessage = modalObjects['modalBodyMessage'];
+        this.modalBody = modalObjects['modalBody'];
+        this.form = modalObjects['modalInternalForm'];
         this.closeButton = this.modal.getElementsByClassName("close")[0]; //Get the specific modal close button
 
         this.closeButton.addEventListener("click", () => {
@@ -201,7 +229,48 @@
         });
 
         this.show = function () {
+
+            var self = this;
+            makeCall("GET", "home/getAvailableUsers", null, function (req) {
+                if(req.readyState === 4){
+                    var message = req.responseText;
+                    if(req.status == 200){
+                        var availablePeople = JSON.parse(req.responseText);
+                        if(availablePeople.length == 0){
+                            self.setAsError("No people found", "No users are available for a meeting invitation");
+                            return;
+                        }
+                        self.update(availablePeople);
+                    } else {
+                        self.setAsError("Error", message);
+                    }
+                }
+            });
             this.modal.style.display = "block";
+        }
+
+        this.update = function(data){
+            var inputGroup, input, label;
+            this.form.innerHTML = "<input type='hidden' name='step' value='secondStep'/>";
+            data.forEach(function (person) {
+                inputGroup = document.createElement("div");
+                inputGroup.className = "inputGroup";
+
+                input = document.createElement("input");
+                input.type = "checkbox";
+                input.name = "invitations";
+                input.value = person.id;
+                input.with = "id="+person.id;
+                input.id = person.id;
+
+                label = document.createElement("label");
+                label.for = person.id;
+                label.textContent = person.username;
+
+                inputGroup.appendChild(input);
+                inputGroup.appendChild(label);
+                this.form.appendChild(inputGroup);
+            });
         }
 
         this.hide = function() {
@@ -210,24 +279,64 @@
         }
 
         this.reset = function () {
-            this.modal.getElementsByClassName("modalTitle")[0].textContent = "Master data";
-            this.modal.getElementsByClassName("errorContainer")[0].hidden = true;
-            var modalBody = this.modal.getElementsByClassName("modalBodyContainer")[0];
-            modalBody.hidden = true;
+            this.modalTitle.textContent = "Master data";
+            this.modalErrorContainer.hidden = true;
+            this.modalBody.hidden = true;
 
         }
 
         this.setAsError = function(title, message) {
-            this.modal.getElementsByClassName("modalTitle")[0].textContent = title;
-            var modalBody = this.modal.getElementsByClassName("errorContainer")[0];
-            modalBody.hidden = false;
-            this.modal.getElementsByClassName("modalBodyContainer").hidden = true;
-            modalBody.innerHTML = "";
+            this.modalTitle.textContent = title;
+            this.modalBody.hidden = false;
+            this.modalBody.hidden = true;
+            this.modalBody.innerHTML = "";
             var paragraphElement = document.createElement("p");
             paragraphElement.textContent = message;
-            modalBody.appendChild(paragraphElement);
+            this.modalBody.appendChild(paragraphElement);
+            this.modal.style.display="block";
         }
 
+        this.cancelButton.addEventListener("click", (e) => {
+            this.form.reset();
+            wizard.reset();
+        });
+
+        this.submitButton.addEventListener("click", (e) => {
+            var checkboxes = e.target.closest("form").querySelector("input[type='checkbox']");
+            var counter = 0;
+            checkboxes.forEach(function (cb) {
+                if(cb.checked){
+                    counter++;
+                }
+            });
+            if(counter <= wizard.meeting.maxPartecipants-1){
+                var self = this;
+                makeCall("POST", "home/addMeeting", e.target.closest("form"), function (req) {
+                    if (req.readyState == XMLHttpRequest.DONE) {
+                        var message = req.responseText;
+                        switch (req.status) {
+                            case 200:
+                                self.hide();
+                                pageOrchestrator.refresh();
+                                break;
+                            case 400: // bad request
+                                self.setAsError("Bad Request", message);
+                                break;
+                            case 401: // unauthorized
+                                self.setAsError("Unauthorized", message);
+                                break;
+                            case 500: // server error
+                                self.setAsError("Internal server error", message);
+                                break;
+                        }
+                    }
+                }, true)
+            } else {
+                if(!wizard.increaseTry()){
+                    this.modalBodyMessage.textContent = "Too much people selected, please delete at least " + counter-wizard.meeting.maxPartecipants-1 + "people";
+                }
+            }
+        });
 
     }
 
@@ -244,7 +353,15 @@
             availableMeetings = new AvailableMeetings(availableMeetingsAlertContainer, document.getElementById("availableMeetingsTable"), document.getElementById("availableMeetingsTableBody"));
             myMeetings = new MyMeetings(myMeetingsAlertContainer, document.getElementById("myMeetingsTable"), document.getElementById("myMeetingsTableBody"));
 
-            let newMeetingModal = new ModalWindow(document.getElementById("createMeetingModal"));
+            let newMeetingModal = new ModalWindow(document.getElementById("createMeetingModal"), {
+                modalCancelButton:document.getElementById("modalCancelButton"),
+                modalSubmitButton: document.getElementById("modalSubmitButton"),
+                modalInternalForm: document.getElementById("modalInternalForm"),
+                modalTitle: document.getElementById("modalTitle"),
+                modalBody: document.getElementById("modalBodyContainer"),
+                modalBodyMessage: document.getElementById("modalBodyMessage"),
+                modalErrorContainer: document.getElementById("modalErrorContainer")
+            });
 
             wizard = new Wizard(document.getElementById("newMeetingWizard"), newMeetingModal, wizardAlertContainer);
 

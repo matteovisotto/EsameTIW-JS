@@ -145,5 +145,15 @@ public class UserDAO {
         }
     }
 
+    public boolean existsUser(int id) throws SQLException{
+        String query = "SELECT username FROM user WHERE id = ?";
+        try (PreparedStatement pstatement = con.prepareStatement(query);) {
+            pstatement.setInt(1, id);
+            try (ResultSet result = pstatement.executeQuery();) {
+                return result.isBeforeFirst();
+            }
+
+        }
+    }
 }
 

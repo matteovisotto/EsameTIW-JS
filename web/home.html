@@ -56,6 +56,7 @@
                 <h2>Create new meeting</h2>
                 <div id="wizardAlertContainer"></div>
                 <form class="form" id="newMeetingWizard">
+                    <input type="hidden" name="step" value="firstStep"/>
                     <label>Title</label>
                     <input type="text" class="form-control" name="meetingName" required/>
                     <!-- NOTA : Firefox non supporta datetime-local, perciò splittiamo -->
@@ -87,11 +88,24 @@
     <div class="modal-content">
         <div class="modal-header">
             <span class="close" id="closeModal">&times;</span>
-            <h2 class="modalTitle">New Meeting</h2>
+            <h2 id="modalTitle">New Meeting</h2>
         </div>
         <div class="modal-body">
-            <div class="errorContainer"></div>
-            <div class="modalBodyContainer"></div>
+            <div id="modalErrorContainer"></div>
+            <div id="modalBodyContainer">
+                <div id="modalBodyMessage"></div>
+                <form class="checkbox-form" id="modalInternalForm">
+                    <input type="hidden" name="step" value="secondStep" />
+                    <!--<div class="inputGroup">
+                        <input data-th-with="id=${c.getId()}" data-th-id="${id}" type="checkbox" name="invitations" data-th-value="${id}" data-th-checked="${selected.contains(id)} ? 'checked'"/>
+                        <label data-th-for="${c.getId()}" data-th-text="${c.getUsername()}"></label>
+                    </div>-->
+                    <div class="row" style="text-align: center;">
+                        <button type="button" class="btn btn-primary centered" id="modalSubmitButton">Submit</button>
+                        <button type="button" class="btn btn-warning centered" id="modalCancelButton">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
