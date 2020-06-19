@@ -70,39 +70,6 @@ public class UserDAO {
         }
     }
 
-    public User getUser(int userId) throws SQLException, NoSuchElementException {
-        String query = "SELECT  * FROM user WHERE id = ?";
-        try (PreparedStatement pstatement = con.prepareStatement(query);) {
-            pstatement.setInt(1, userId);
-            try (ResultSet result = pstatement.executeQuery();) {
-                if (!result.isBeforeFirst()) // no results, credential check failed
-                    throw new NoSuchElementException();
-                else {
-                    result.next();
-                    User user = new User();
-                    user.setId(result.getInt("id"));
-                    user.setUsername(StringEscapeUtils.unescapeJava(result.getString("username")));
-                    return user;
-                }
-            }
-        }
-    }
-
-    public ArrayList<User> getAllUsers() throws SQLException {
-        String query = "SELECT  * FROM user";
-        ArrayList<User> list = new ArrayList<>();
-        try (PreparedStatement pstatement = con.prepareStatement(query);) {
-            try (ResultSet result = pstatement.executeQuery();) {
-                while (result.next()){
-                    User user = new User();
-                    user.setId(result.getInt("id"));
-                    user.setUsername(StringEscapeUtils.unescapeJava(result.getString("username")));
-                    list.add(user);
-                }
-                return list;
-            }
-        }
-    }
 
     public ArrayList<User> getAllUsersExcept(int userId) throws SQLException {
         String query = "SELECT  * FROM user WHERE id != ?";
