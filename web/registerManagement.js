@@ -12,7 +12,7 @@
             var passwordCheck = form['password_cnf'].value;
             if(passwordField === passwordCheck){
                 makeCall("POST", "register", form, function(req) {
-                    if (req.readyState == XMLHttpRequest.DONE) {
+                    if (req.readyState === XMLHttpRequest.DONE) {
                         var message = req.responseText;
                         switch (req.status) {
                             case 200: //ok
