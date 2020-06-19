@@ -172,13 +172,13 @@
                                 self.modal.show();
                                 break;
                             case 400: // bad request
-                                self.setAsError("Bad Request", message);
+                                self.modal.setAsError("Bad Request", message);
                                 break;
                             case 401: // unauthorized
-                                self.setAsError("Unauthorized", message);
+                                self.modal.setAsError("Unauthorized", message);
                                 break;
                             case 500: // server error
-                                self.setAsError("Internal server error", message);
+                                self.modal.setAsError("Internal server error", message);
                                 break;
                         }
                     }
@@ -339,7 +339,7 @@
                 }, true);
             } else {
                 if(!wizard.increaseTry()){
-                    this.modalBodyMessage.textContent = "Too much people selected, please delete at least " + (parseInt(counter)-parseInt(wizard.meeting.maxPartecipants)+1) + " people";
+                    this.modalBodyMessage.textContent = "Too many people selected, please delete at least " + (parseInt(counter)-parseInt(wizard.meeting.maxPartecipants)+1) + " people";
                 }
             }
         });
