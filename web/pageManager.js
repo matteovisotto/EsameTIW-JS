@@ -36,9 +36,9 @@
             makeCall("GET", "home/availableMeetings", null, function (req) {
                 if(req.readyState === 4){
                     var message = req.responseText;
-                    if(req.status == 200){
+                    if(req.status === 200){
                         var availableMeetings = JSON.parse(req.responseText);
-                        if(availableMeetings.length == 0){
+                        if(availableMeetings.length === 0){
                             self.alertContainer.className = "alert alert-primary";
                             self.alertContainer.textContent = "No available meetings";
                             self.alertContainer.hidden = false;
@@ -95,9 +95,9 @@
             makeCall("GET", "home/myMeetings", null, function (req) {
                 if(req.readyState === 4){
                     var message = req.responseText;
-                    if(req.status == 200){
+                    if(req.status === 200){
                         var availableMeetings = JSON.parse(req.responseText);
-                        if(availableMeetings.length == 0){
+                        if(availableMeetings.length === 0){
                             self.alertContainer.className = "alert alert-primary";
                             self.alertContainer.textContent = "No available meetings";
                             self.alertContainer.hidden = false;
@@ -148,6 +148,11 @@
         this.numOfTries = 0;
         this.meeting =  null;
 
+        this.setAsError = function(title, message) {
+            window.alert("Invalid parameter supplied. Please correct and try again.");
+        }
+
+
         this.wizard.querySelector("input[id='resetMeetingButton']").addEventListener("click", (e) => {
             e.target.closest("form").reset();
             this.reset();
@@ -156,16 +161,21 @@
         this.wizard.querySelector("input[id='addMeetingButton']").addEventListener("click", (e) => {
             const form = e.target.closest("form");
             if(form.checkValidity()){
+                let date = new Date();
+                 if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || form['meetingDate'].value < date || form['meetingTime'].value < date.getHours()) {
+                    this.modal.setAsError("Bad Request", "Invalid parameter supplied.");
+                    return;
+                }
                 this.meeting = {
                     title: form['meetingName'].value,
                     date: form['meetingDate'].value,
                     time: form['meetingTime'].value,
                     duration: form['meetingDuration'].value,
-                    maxPartecipants: form['meetingMaxParticipants'].value
+                    maxParticipants: form['meetingMaxParticipants'].value
                 }
                 var self = this;
                 makeCall("POST", "home/addMeeting", form, function (req) {
-                    if (req.readyState == XMLHttpRequest.DONE) {
+                    if (req.readyState === XMLHttpRequest.DONE) {
                         var message = req.responseText;
                         switch (req.status) {
                             case 200:
@@ -195,7 +205,7 @@
             this.numOfTries = this.numOfTries +1;
             if(this.numOfTries >= 3){
                 this.reset()
-                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + parseInt(self.meeting.maxPartecipants) + " people, the meeting will not be created.");
+                this.modal.setAsError("Attention","Three tries to create a meeting with more than " + parseInt(self.meeting.maxParticipants) + " people, the meeting will not be created.");
                 return true;
             }
             return false;
@@ -225,7 +235,7 @@
         });
 
         window.addEventListener("click", (e) => {
-            if(e.target == this.modal){
+            if(e.target === this.modal){
                 this.hide();
             }
         });
@@ -236,9 +246,9 @@
             makeCall("GET", "home/getAvailableUsers", null, function (req) {
                 if(req.readyState === 4){
                     var message = req.responseText;
-                    if(req.status == 200){
+                    if(req.status === 200){
                         var availablePeople = JSON.parse(req.responseText);
-                        if(availablePeople.length == 0){
+                        if(availablePeople.length === 0){
                             self.setAsError("No people found", "No users are available for a meeting invitation");
                             return;
                         }
@@ -322,7 +332,7 @@
             if(counter <= wizard.meeting.maxPartecipants-1){
                 var self = this;
                 makeCall("POST", "home/addMeeting", e.target.closest("form"), function (req) {
-                    if (req.readyState == XMLHttpRequest.DONE) {
+                    if (req.readyState === XMLHttpRequest.DONE) {
                         var message = req.responseText;
                         switch (req.status) {
                             case 200:
