@@ -258,7 +258,7 @@
             var self = this;
             data.forEach(function (person) {
                 inputGroup = document.createElement("div");
-                inputGroup.className = "inputGroup";
+                //inputGroup.className = "inputGroup";
 
                 input = document.createElement("input");
                 input.type = "checkbox";
@@ -315,6 +315,10 @@
                     counter = counter+1;
                 }
             });
+            if(counter === 0){
+               this.modalBodyMessage.textContent = "Please select someone to continue";
+               return;
+            }
             if(counter <= wizard.meeting.maxPartecipants-1){
                 var self = this;
                 makeCall("POST", "home/addMeeting", e.target.closest("form"), function (req) {
