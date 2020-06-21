@@ -1,3 +1,10 @@
+function compareDate(value, date) {
+    let hour = value.split(":")[0];
+    if (hour < date.getHours()) return -1;
+    let minutes = value.split(":")[1];
+    return (minutes < date.getMinutes() ? -1 : 1);
+}
+
 /**
  * Website page controller
  */
@@ -162,7 +169,9 @@
             const form = e.target.closest("form");
             if(form.checkValidity()){
                 let date = new Date();
-                if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || new Date(form['meetingDate'].value) < date || form['meetingTime'].value < date.getHours()) {
+                let date2 = new Date();
+                date2.setHours(0); date2.setMinutes(0); date2.setSeconds(0);
+                if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || new Date(form['meetingDate'].value) < date2 || compareDate(form['meetingTime'].value , date) < 0 ) {
                     this.modal.setAsError("Bad Request", "Invalid parameter supplied.");
                     return;
                 }
