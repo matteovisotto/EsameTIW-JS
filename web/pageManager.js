@@ -162,7 +162,7 @@
             const form = e.target.closest("form");
             if(form.checkValidity()){
                 let date = new Date();
-                 if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || form['meetingDate'].value < date || form['meetingTime'].value < date.getHours()) {
+                if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || new Date(form['meetingDate'].value) < date || form['meetingTime'].value < date.getHours()) {
                     this.modal.setAsError("Bad Request", "Invalid parameter supplied.");
                     return;
                 }
