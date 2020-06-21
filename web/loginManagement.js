@@ -38,4 +38,12 @@
     }
   });
 
+  var form = document.getElementsByTagName("form")[0];
+  var passwordInput = form['password'];
+  passwordInput.addEventListener("keyup", (e) => {
+    if(e.keyCode === 13){
+      document.getElementById("loginbutton").click();
+    }
+  });
+
 })();
