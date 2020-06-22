@@ -34,8 +34,6 @@ function compareDateTime(date, time) { // compares given date and time against c
         }
     }
 
-
-
     function AvailableMeetings (_alertContainer, _meetingsContainer, _meetingsContainerBody) {
         this.alertContainer = _alertContainer;
         this.meetingsContainer = _meetingsContainer;
@@ -162,7 +160,7 @@ function compareDateTime(date, time) { // compares given date and time against c
         this.numOfTries = 0;
         this.meeting =  null;
 
-        this.setAsError = function(title, message) {
+        this.setAsError = function() {
             window.alert("Invalid parameter supplied. Please correct and try again.");
         }
 

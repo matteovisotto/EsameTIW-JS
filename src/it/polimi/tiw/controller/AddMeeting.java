@@ -1,6 +1,5 @@
 package it.polimi.tiw.controller;
 
-import com.google.gson.Gson;
 import it.polimi.tiw.beans.Meeting;
 import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.MeetingsDAO;
@@ -28,7 +27,6 @@ import java.util.stream.Collectors;
 public class AddMeeting  extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private Connection connection = null;
-
 
     @Override
     public void init() throws ServletException {
