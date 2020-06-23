@@ -343,7 +343,7 @@ function compareDateTime(date, time) { // compares given date and time against c
                this.modalBodyMessage.textContent = "Please select someone to continue";
                return;
             }
-            if(counter <= wizard.meeting.maxPartecipants-1){
+            if(counter <= wizard.meeting.maxParticipants-1){
                 var self = this;
                 makeCall("POST", "home/addMeeting", e.target.closest("form"), function (req) {
                     if (req.readyState === XMLHttpRequest.DONE) {
@@ -367,7 +367,7 @@ function compareDateTime(date, time) { // compares given date and time against c
                 }, true);
             } else {
                 if(!wizard.increaseTry()){
-                    this.modalBodyMessage.textContent = "Too many people selected, please delete at least " + (parseInt(counter)-parseInt(wizard.meeting.maxPartecipants)+1) + " people";
+                    this.modalBodyMessage.textContent = "Too many people selected, please delete at least " + (parseInt(counter)-parseInt(wizard.meeting.maxParticipants)+1) + " people";
                 }
             }
         });
