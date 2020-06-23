@@ -1,8 +1,15 @@
-function compareDate(value, date) {
-    let hour = value.split(":")[0];
-    if (hour < date.getHours()) return -1;
-    let minutes = value.split(":")[1];
-    return (minutes < date.getMinutes() ? -1 : 1);
+function compareDateTime(date, time) { // compares given date and time against current; returns -1 if dateTime is before current, 1 else
+    let date2 = new Date();
+    date2.setHours(0); date2.setMinutes(0); date2.setSeconds(0); date2.setMilliseconds(0);
+    date.setHours(0); date.setMinutes(0); date.setSeconds(0); date.setMilliseconds(0);
+    let diff = date - date2;
+    if (diff > 0) return 1;
+    else if (diff < 0) return -1;
+    let hour = time.split(":")[0];
+    let currentDateTime = new Date();
+    if (hour < currentDateTime.getHours()) return -1;
+    let minutes = time.split(":")[1];
+    return (minutes < currentDateTime.getMinutes() ? -1 : 1);
 }
 
 /**
@@ -26,8 +33,6 @@ function compareDate(value, date) {
             messageContainer.textContent = this.username;
         }
     }
-
-
 
     function AvailableMeetings (_alertContainer, _meetingsContainer, _meetingsContainerBody) {
         this.alertContainer = _alertContainer;
@@ -155,7 +160,7 @@ function compareDate(value, date) {
         this.numOfTries = 0;
         this.meeting =  null;
 
-        this.setAsError = function(title, message) {
+        this.setAsError = function() {
             window.alert("Invalid parameter supplied. Please correct and try again.");
         }
 
@@ -171,7 +176,7 @@ function compareDate(value, date) {
                 let date = new Date();
                 let date2 = new Date();
                 date2.setHours(0); date2.setMinutes(0); date2.setSeconds(0);
-                if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || new Date(form['meetingDate'].value) < date2 || compareDate(form['meetingTime'].value , date) < 0 ) {
+                if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || compareDateTime(new Date(form['meetingDate'].value) , form['meetingTime'].value) < 0 ) {
                     this.modal.setAsError("Bad Request", "Invalid parameter supplied.");
                     return;
                 }

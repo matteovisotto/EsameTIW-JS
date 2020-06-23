@@ -1,6 +1,5 @@
 package it.polimi.tiw.controller;
 
-import it.polimi.tiw.beans.User;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.utils.ConnectionHandler;
 import it.polimi.tiw.utils.Utility;
@@ -30,7 +29,6 @@ public class Register extends HttpServlet {
         } catch (UnavailableException e){
             e.printStackTrace();
         }
-
     }
 
     @Override

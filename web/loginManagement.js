@@ -24,7 +24,7 @@
               case 401: // unauthorized
                 alertContainer.textContent = message;
                 alertContainer.hidden = false;
-                  break;
+                break;
               case 500: // server error
                 alertContainer.textContent = message;
                 alertContainer.hidden = false;
