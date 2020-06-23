@@ -46,12 +46,6 @@ public class Register extends HttpServlet {
         password = StringEscapeUtils.escapeJava(req.getParameter("password"));
         password_cnf = StringEscapeUtils.escapeJava(req.getParameter("password_cnf"));
 
-        if(!Utility.isValidMailAddress(username)){
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().println("The username must be a valid email address");
-            return;
-        }
-
         if (username == null || password == null || password_cnf == null || username.isEmpty() || password.isEmpty() || password_cnf.isEmpty()) {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().println("Invalid username");
@@ -61,6 +55,14 @@ public class Register extends HttpServlet {
             resp.getWriter().println("Password not match");
             return;
         }
+
+        if(!Utility.isValidMailAddress(username)){
+            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            resp.getWriter().println("The username must be a valid email address");
+            return;
+        }
+
+
 
         UserDAO userDao = new UserDAO(connection);
 
