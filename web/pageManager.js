@@ -173,9 +173,6 @@ function compareDateTime(date, time) { // compares given date and time against c
         this.wizard.querySelector("input[id='addMeetingButton']").addEventListener("click", (e) => {
             const form = e.target.closest("form");
             if(form.checkValidity()){
-                let date = new Date();
-                let date2 = new Date();
-                date2.setHours(0); date2.setMinutes(0); date2.setSeconds(0);
                 if ( form['meetingDuration'].value < 1 ||  form['meetingMaxParticipants'].value  < 2 || compareDateTime(new Date(form['meetingDate'].value) , form['meetingTime'].value) < 0 ) {
                     this.modal.setAsError("Bad Request", "Invalid parameter supplied.");
                     return;
