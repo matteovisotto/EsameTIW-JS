@@ -55,6 +55,7 @@ public class MeetingsDAO {
     }
 
     public void createMeeting(String title, int maxParticipants, Date timestamp, int duration, int creatorId, ArrayList<Integer> invitedUsers) throws SQLException {
+        con.setAutoCommit(false);
         String query = "INSERT INTO meetings (title, maxparticipants, timestamp, duration, creatorid) values (?,?,?,?,?)";
         try (PreparedStatement pstatement = con.prepareStatement(query);) {
             pstatement.setString(1, StringEscapeUtils.escapeJava(title));
@@ -85,6 +86,8 @@ public class MeetingsDAO {
                 pstatement.executeUpdate();
             }
         }
+        con.commit();
+        con.setAutoCommit(true);
     }
 
 
