@@ -62,8 +62,7 @@ public class Register extends HttpServlet {
             return;
         }
 
-
-
+        
         UserDAO userDao = new UserDAO(connection);
 
         try {
@@ -82,5 +81,14 @@ public class Register extends HttpServlet {
 
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().println("Account successfully created");
+    }
+
+    @Override
+    public void destroy() {
+        try{
+            ConnectionHandler.closeConnection(connection);
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
     }
 }
